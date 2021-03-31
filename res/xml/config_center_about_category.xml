@@ -77,16 +77,6 @@
         </Preference>
 
         <Preference
-            android:title="Yasin"
-            android:summary="Developer Relations Manager">
-        </Preference>
-
-        <Preference
-            android:title="Gagan Malvi"
-            android:summary="Project co-ordinator">
-        </Preference>
-
-        <Preference
             android:title="Sid"
             android:summary="Project co-ordinator">
         </Preference>
@@ -102,18 +92,8 @@
         </Preference>
 
         <Preference
-            android:title="Paget96"
-            android:summary="App Developer">
-        </Preference>
-
-        <Preference
             android:title="Nikhil"
-            android:summary="Lead designer">
-        </Preference>
-
-        <Preference
-            android:title="MIUNO"
-            android:summary="Co-designer">
+            android:summary="Designer">
         </Preference>
 
     </PreferenceCategory>
@@ -125,11 +105,6 @@
         <Preference
             android:title="Prabhat"
             android:summary="Asus Zenfone Max Pro M1">
-        </Preference>
-
-        <Preference
-            android:title="Flamefusion"
-            android:summary="Asus Zenfone Max M1">
         </Preference>
 
         <Preference
@@ -153,48 +128,13 @@
         </Preference>
 
         <Preference
-            android:title="Sahil Sonar"
-            android:summary="Poco F1">
-        </Preference>
-
-        <Preference
             android:title="Debayan Kar"
             android:summary="Realme 1">
         </Preference>
 
         <Preference
-            android:title="Debayan Kar, Sakthivel"
-            android:summary="Realme U1">
-        </Preference>
-
-        <Preference
-            android:title="Mohamed Arshad"
-            android:summary="Redmi 7">
-        </Preference>
-
-        <Preference
-            android:title="Gagan Malvi"
-            android:summary="Redmi Note 4X">
-        </Preference>
-
-        <Preference
-            android:title="Ayush"
-            android:summary="Redmi Note 5 Pro">
-        </Preference>
-
-        <Preference
-            android:title="HeroBuxx"
-            android:summary="Redmi Note 6 Pro">
-        </Preference>
-
-        <Preference
             android:title="Alisson Grizotti"
             android:summary="Redmi Note 7">
-        </Preference>
-
-        <Preference
-            android:title="Yasin"
-            android:summary="Redmi Note 7 Pro">
         </Preference>
 
         <Preference
@@ -205,11 +145,6 @@
         <Preference
             android:title="Sahil Sonar"
             android:summary="Redmi Note 8 Pro">
-        </Preference>
-
-        <Preference
-            android:title="Takeshiro"
-            android:summary="Xiaomi Mi A1">
         </Preference>
 
     </PreferenceCategory>
