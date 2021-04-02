@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 CarbonROM - 2019 HavocOS
+ * Copyright (C) 2018 CarbonROM
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,11 @@
 
 package org.cesium.config.center.fragments;
 
-import android.content.Context;
-import android.content.ContentResolver;
-import android.content.res.Resources;
+import android.database.ContentObserver;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.UserHandle;
-import android.os.PowerManager;
 import androidx.preference.*;
 import android.provider.Settings;
 
@@ -34,55 +33,72 @@ import org.cesium.config.center.preferences.SystemSettingSwitchPreference;
 
 public class SmartPixels extends SettingsPreferenceFragment implements
         Preference.OnPreferenceChangeListener {
-        private static final String TAG = "SmartPixels";
 
-        private static final String ON_POWER_SAVE = "smart_pixels_on_power_save";
+    private static final String TAG = "SmartPixels";
+    private static final String SMART_PIXELS_ENABLE = "smart_pixels_enable";
+    private static final String SMART_PIXELS_ON_POWER_SAVE = "smart_pixels_on_power_save";
 
-        private SystemSettingSwitchPreference mSmartPixelsOnPowerSave;
+    private SystemSettingSwitchPreference mSmartPixelsOnPowerSave;
+    private SystemSettingSwitchPreference mSmartPixelsEnable;
 
-        ContentResolver resolver;
+    private SmartPixelsObserver mSmartPixelsObserver;
 
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.smart_pixels);
-            resolver = getActivity().getContentResolver();
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-            mSmartPixelsOnPowerSave = (SystemSettingSwitchPreference) findPreference(ON_POWER_SAVE);
+        addPreferencesFromResource(R.xml.smart_pixels);
 
-            updateDependency();
-        }
+        mSmartPixelsEnable = (SystemSettingSwitchPreference) findPreference(SMART_PIXELS_ENABLE);
+        mSmartPixelsOnPowerSave = (SystemSettingSwitchPreference) findPreference(SMART_PIXELS_ON_POWER_SAVE);
+        mSmartPixelsObserver = new SmartPixelsObserver(new Handler());
+    }
 
-        @Override
-        public int getMetricsCategory() {
-            return MetricsEvent.CUSTOM_SETTINGS;
-        }
+    @Override
+    public int getMetricsCategory() {
+        return MetricsEvent.CUSTOM_SETTINGS;
+    }
 
-        @Override
-        public void onResume() {
-            super.onResume();
-        }
-
-        @Override
-        public void onPause() {
-            super.onPause();
-        }
-
-        public boolean onPreferenceChange(Preference preference, Object objValue) {
-            final String key = preference.getKey();
-            updateDependency();
-            return true;
-        }
-
-        private void updateDependency() {
-            boolean mUseOnPowerSave = (Settings.System.getIntForUser(
-                    resolver, Settings.System.SMART_PIXELS_ON_POWER_SAVE,
-                    0, UserHandle.USER_CURRENT) == 1);
-            PowerManager pm = (PowerManager)getActivity().getSystemService(Context.POWER_SERVICE);
-            if (pm.isPowerSaveMode() && mUseOnPowerSave) {
-                mSmartPixelsOnPowerSave.setEnabled(false);
-            } else {
-                mSmartPixelsOnPowerSave.setEnabled(true);
-            }
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mSmartPixelsObserver != null) {
+            mSmartPixelsObserver.register();
         }
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mSmartPixelsObserver != null) {
+            mSmartPixelsObserver.unregister();
+        }
+    }
+
+     public boolean onPreferenceChange(Preference preference, Object objValue) {
+        final String key = preference.getKey();
+        return true;
+     }
+
+    private class SmartPixelsObserver extends ContentObserver {
+        public SmartPixelsObserver(Handler handler) {
+            super(handler);
+        }
+
+        public void register() {
+            getActivity().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    SMART_PIXELS_ENABLE), false, this, UserHandle.USER_CURRENT);
+            getActivity().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    SMART_PIXELS_ON_POWER_SAVE), false, this, UserHandle.USER_CURRENT);
+        }
+
+        public void unregister() {
+            getActivity().getContentResolver().unregisterContentObserver(this);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            super.onChange(selfChange);
+        }
+    }
+}

@@ -31,12 +31,12 @@ import com.android.settings.SettingsPreferenceFragment;
 
 import org.cesium.config.center.preferences.SystemSettingSwitchPreference;
 
-public class Battery extends SettingsPreferenceFragment implements 
+public class Battery extends SettingsPreferenceFragment implements
         Preference.OnPreferenceChangeListener {
 
     public static final String TAG = "Battery";
 
-    private static final String SMART_PIXELS_ENABLED = "smart_pixels_enable";
+    private static final String SMART_PIXELS = "smart_pixels";
 
     private SystemSettingSwitchPreference mSmartPixelsEnabled;
 
@@ -45,25 +45,23 @@ public class Battery extends SettingsPreferenceFragment implements
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.config_center_battery);
 
-        mSmartPixelsEnabled = (SystemSettingSwitchPreference) findPreference(SMART_PIXELS_ENABLED);
-        mSmartPixelsEnabled.setOnPreferenceChangeListener(this);
-        int smartPixelsEnabled = Settings.System.getInt(getContentResolver(),
-                SMART_PIXELS_ENABLED, 0);
-        mSmartPixelsEnabled.setChecked(smartPixelsEnabled != 0);
+        updateSmartPixelsPreference();
+    }
 
-        if (!getResources().getBoolean(com.android.internal.R.bool.config_enableSmartPixels)) {
-            getPreferenceScreen().removePreference(mSmartPixelsEnabled);
+     private void updateSmartPixelsPreference() {
+        PreferenceScreen prefSet = getPreferenceScreen();
+        boolean enableSmartPixels = getContext().getResources().
+                getBoolean(com.android.internal.R.bool.config_enableSmartPixels);
+        Preference smartPixels = findPreference(SMART_PIXELS);
+         if (!enableSmartPixels){
+            prefSet.removePreference(smartPixels);
         }
+        ContentResolver resolver = getActivity().getContentResolver();
     }
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object objValue) {
-        if (preference == mSmartPixelsEnabled) {
-            boolean value = (Boolean) objValue;
-            Settings.System.putInt(getContentResolver(),
-		            SMART_PIXELS_ENABLED, value ? 1 : 0);
-        }
-        return true; 
+        return true;
     }
 
     @Override
